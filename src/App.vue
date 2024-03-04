@@ -1,55 +1,25 @@
 <script setup>
-import BlogPost from './components/BlogPost.vue';
-import { ref, onMounted } from "vue";
-import PagintePost from './components/PaginatePost.vue';
-import LoadingSpinner from './components/LoadingSpinner.vue'
-const posts = ref([]);
-const inicio = ref(0);
-const fin = ref(postXpage);
-const postXpage = 10;
-const loading = ref(true);
+import { RouterLink, RouterView } from 'vue-router'
 
-const favorito = ref('');
-
-const cambiarFavorito = (title) => {
-  favorito.value = title;
-};
-
-
-
-const next = () => {
-  inicio.value += postXpage;
-  fin.value += postXpage;
-}
-
-const prev = () => {
-  inicio.value = inicio.value - postXpage;
-  fin.value = fin.value - postXpage;
-}
-
-const fetchData = async () => {
-  try {
-    const res = await fetch('https://jsonplaceholder.typicode.com/posts');
-    posts.value = await res.json();
-
-  } catch (error) {
-    console.log(error);
-  } finally {
-    loading.value = false;
-  }
-}
-
-fetchData();
 </script>
 
 <template>
-  <LoadingSpinner v-if="loading"></LoadingSpinner>
-  <div class="container" v-else>
-    <h1>APP</h1>
-    <h2>Mi post favorito: {{ favorito }}</h2>
+  <nav class="navbar bg-body-tertiary">
+    <div class="container-fluid">
+      <router-link class="navbar-brand" to="/">
+        <img src="@/assets/logo.svg" alt="Logo" width="30" height="24" class="d-inline-block align-text-top">
+        PokeAPI
+      </router-link>
+      <div>
+        <router-link class="btn btn-outline-primary me-2" to="/" active-class="active">Home</router-link>
+        <router-link class="btn btn-outline-primary " to="/pokemons" active-class="active">Pokemons</router-link>
+      </div>
+    </div>
+  </nav>
+  <div class="container">
+    <RouterView />
 
-    <PagintePost class="mb-2" :next="next" :prev="prev" :inicio="inicio" :fin="fin" :count="posts.length"></PagintePost>
-    <BlogPost v-for="post in posts.slice(inicio, fin)" :key="post.id" :title="post.title" :id="post.id" :body="post.body"
-      :cambiarFavorito="cambiarFavorito" />
   </div>
 </template>
+
+<style scoped></style>
